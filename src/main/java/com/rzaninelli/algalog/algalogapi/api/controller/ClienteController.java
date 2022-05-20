@@ -2,6 +2,7 @@ package com.rzaninelli.algalog.algalogapi.api.controller;
 
 import com.rzaninelli.algalog.algalogapi.domain.model.Cliente;
 import com.rzaninelli.algalog.algalogapi.domain.repository.ClienteRepository;
+import com.rzaninelli.algalog.algalogapi.domain.service.CatalogoClienteService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class ClienteController {
      */
 
     private ClienteRepository clienteRepository;
+    private CatalogoClienteService catalogoClienteService;
 
     @GetMapping
     public List<Cliente> listar(){
@@ -54,7 +56,7 @@ public class ClienteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cliente adicionar(@Valid @RequestBody Cliente cliente){
-        return clienteRepository.save(cliente);
+        return catalogoClienteService.salvar(cliente);
     }
 
     @PutMapping("/{clienteId}")
@@ -63,7 +65,7 @@ public class ClienteController {
             return ResponseEntity.notFound().build();
         }
         cliente.setId(clienteId);
-        cliente = clienteRepository.save(cliente);
+        cliente = catalogoClienteService.salvar(cliente);
         return ResponseEntity.ok(cliente);
     }
 
@@ -72,7 +74,7 @@ public class ClienteController {
         if (!clienteRepository.existsById(clienteId)){
             return ResponseEntity.notFound().build();
         }
-        clienteRepository.deleteById(clienteId);
+        catalogoClienteService.excluirCliente(clienteId);
 
         return ResponseEntity.noContent().build();
     }
